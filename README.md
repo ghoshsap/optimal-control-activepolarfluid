@@ -10,3 +10,6 @@ the solutions to identify generic principles for controlling polar active fluids
 implications for achieving spatiotemporal control of active polar systems in experiments, particu-
 larly in vitro cytoskeletal systems. Additionally, this research paves the way for leveraging optimal
 control methods to engineer the structure and dynamics of active fluids more broadly.
+
+
+[intro_fig_3.pdf](https://github.com/user-attachments/files/16556553/intro_fig_3.pdf)
