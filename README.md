@@ -27,7 +27,7 @@ docker run -ti -v $(pwd):/home/fenics/shared:z quay.io/fenicsproject/stable
 
 ```bash
 cd /home/fenics/shared
-mpirun -n 4 python3 polar_control.py
+mpirun -n 4 python3 forward_polar.py
 ```
 
 
