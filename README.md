@@ -19,6 +19,7 @@ Steps to run script:
 
 Lauching FEniCS using docker:
 docker run -ti -v $(pwd):/home/fenics/shared:z quay.io/fenicsproject/stable
+
 mpirun -n 4 python3 polar_control.py
 
 
