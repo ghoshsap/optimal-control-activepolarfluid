@@ -18,12 +18,17 @@ control methods to engineer the structure and dynamics of active fluids more bro
 
 #### Launching FEniCS Using Docker
 
-To launch FEniCS using Docker and running the code, use the following commands:
+To launch FEniCS using Docker, use the following commands:
 
 ```bash
 docker run -ti -v $(pwd):/home/fenics/shared:z quay.io/fenicsproject/stable
+```
+#### Running python code
 
+```bash
+cd /home/fenics/shared
 mpirun -n 4 python3 polar_control.py
+```
 
 
 
