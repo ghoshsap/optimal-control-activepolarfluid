@@ -17,17 +17,15 @@ A, B, C, D, E = 1e-10, 0.1, 0.1, 1.2, 1.2
 
 set_log_level(50)
 
-
 nx, ny = 60, 60
 LX, LY = 128, 128
 count = 0
 mesh = RectangleMesh(Point(0, 0), Point(LX, LY), nx, ny)
 
 
-
 dt = 1
 time = 1800
-num_steps = int(time/dt)
+num_steps = int(time/dt) + 1
 dal = 50
 epsilon = 0.04
 penalty = []
@@ -41,18 +39,11 @@ lmd = 0.8
 
 w_0_star = 0.2236
 
-# data_dir = f"/scratch1/saptorshighosh/control/dec14/D_{D}"
-# folder = f"aster_LX_{LX}_nx_{nx}_{time}_t_lr_{learning_rate}"
-# parent_dir = f'{data_dir}/{folder}'
 
 data_dir = f"/home/fenics/shared"
 if not os.path.exists(data_dir):
     os.makedirs(data_dir)
 nopy = False
-
-# if not os.path.exists(parent_dir):
-#     os.makedirs(parent_dir)
-# nopy = False
 
 ####################################################################################################
 
@@ -154,8 +145,6 @@ tf = TestFunction(MFS)
 
 # functional derivative of lagrangian with respect to omega
 
-#djdw = C*(w - w_star) - 2*w*dot(tau_new, grad(eta_new)) - 2*w*rho_new*div(nu_new)
-
 djdw = C*(2*w)*(w**2 - w_star**2) - 2*w*dot(tau_new, grad(eta_new)) - 2*w*rho_new*div(nu_new)
 
 
@@ -194,7 +183,6 @@ def timestep(w_all_k):
 
         problem = NonlinearVariationalProblem(Res, u_new, [], J)
         solver = NonlinearVariationalSolver(problem)
-        #prm = solver.parameters
 
         solver.solve()
 
@@ -233,7 +221,6 @@ def timestep(w_all_k):
         Res_adj = Res3 + Res4
         solve(Res_adj == 0, v_new)
 
-        # v_all[:, j] = v_old.vector()[:]
         v_all.append(v_old.copy(deepcopy = True))
 
         v_old.assign(v_new)
@@ -309,7 +296,7 @@ def armijo(u_all, v_all, w_all_k, w_star):
 
     cost = 0.0
     
-    gradf = C*(w - w_star) - 2*w*dot(tau_new, grad(eta_new)) - 2*w*rho_new*div(nu_new)
+    gradf = C*(2*w)*(w**2 - w_star**2) - 2*w*dot(tau_new, grad(eta_new)) - 2*w*rho_new*div(nu_new)
 
     for i in range(num_steps):
         
@@ -346,7 +333,7 @@ while(count < dal):
     # Backtracking implementation
     if(count != 0):
         
-        while((penalty[count] > penalty[count - 1]) and lr > 0.0001):   
+        while((penalty[count] > penalty[count - 1] + epsilon*armj) and lr > 0.0001):   
 
             lr = 0.1*lr
             print(f"Correcting learning rate to {lr}", flush = True)
@@ -359,7 +346,7 @@ while(count < dal):
  
         learning.append(lr)   
 
-    # armj = armijo(u_all, v_all, w_all_k, w_star)     
+    armj = armijo(u_all, v_all, w_all_k, w_star)     
     w_backup = w_all_k.copy()
     (u_backup, v_backup) = (u_all.copy(), v_all.copy())
     w_all_k = update_control(u_all, v_all, w_all_k, lr).copy()  
