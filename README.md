@@ -31,14 +31,14 @@ mpirun -n 4 python3 forward_polar.py
 ```
 
 
-### Running the Script on a HPC cluster
+### Running the Script on a HPC cluster. Have the docker image in the same folder as the python scripts
 
 #### Need to have singularity using apptainer
 
 ```bash
 module --ignore-cache load share_modules/APPTAINER/1.3.2
 module swap openmpi3 mvapich2/2.2
-srun --mpi=pmi2 -n 4 singularity exec -H /home/saptorshighosh/docker_tmp -B /scratch1/saptorshighosh/polar:/home/fenics/shared ../fenics_stable.img python3 control_polar.py
+srun --mpi=pmi2 -n 4 singularity exec -H /home/saptorshighosh/docker_tmp -B data_dir:/home/fenics/shared fenics_stable.img python3 control_polar.py
 ```
 
 
